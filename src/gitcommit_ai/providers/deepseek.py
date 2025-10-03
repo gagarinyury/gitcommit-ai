@@ -91,61 +91,42 @@ class DeepSeekProvider(AIProvider):
         return errors
 
     def _build_prompt(self, diff: GitDiff) -> str:
-        """Build improved prompt for DeepSeek API with actual diff content.
+        """Build prompt using external template with actual diff content.
 
         Args:
             diff: GitDiff object.
 
         Returns:
-            Prompt string with code context.
+            Rendered prompt string with variables substituted.
         """
-        # Build file list with actual diff content (limit to prevent token overflow)
-        file_details = []
+        from gitcommit_ai.prompts.loader import PromptLoader
+
+        # Build diff content with actual code changes (limit to prevent token overflow)
+        diff_details = []
         for f in diff.files[:5]:  # Limit to 5 files to avoid token limits
-            file_details.append(f"File: {f.path} ({f.change_type}, +{f.additions} -{f.deletions})")
+            diff_details.append(f"File: {f.path} ({f.change_type}, +{f.additions} -{f.deletions})")
             # Include first 20 lines of diff content for context
             diff_lines = f.diff_content.split('\n')[:20]
             if diff_lines:
-                file_details.append("```diff")
-                file_details.append('\n'.join(diff_lines))
+                diff_details.append("```diff")
+                diff_details.append('\n'.join(diff_lines))
                 if len(f.diff_content.split('\n')) > 20:
-                    file_details.append("... (truncated)")
-                file_details.append("```")
+                    diff_details.append("... (truncated)")
+                diff_details.append("```")
 
-        files_section = "\n\n".join(file_details)
+        diff_content = "\n\n".join(diff_details)
 
-        return f"""You are an expert developer writing a git commit message.
+        # Load template and render with variables
+        loader = PromptLoader()
+        template = loader.load("deepseek")
 
-CHANGES:
-{files_section}
-
-STATISTICS:
-Total: +{diff.total_additions} -{diff.total_deletions} lines across {len(diff.files)} file(s)
-
-TASK:
-Analyze the actual code changes above and write a precise conventional commit message.
-
-1. Identify the PRIMARY change type:
-   - feat: new feature/capability
-   - fix: bug fix
-   - refactor: code restructure (no behavior change)
-   - docs: documentation only
-   - test: test changes only
-   - chore: maintenance/tooling
-
-2. Determine specific scope (component/module affected, e.g., 'cli', 'auth', 'parser')
-
-3. Write concise description (imperative mood, <50 chars)
-
-4. Add body paragraph (2-3 sentences) explaining WHY if change is significant
-
-FORMAT:
-type(scope): brief description
-
-[Optional body paragraph explaining the reasoning]
-
-IMPORTANT: Base your message on the ACTUAL code changes shown above, not just filenames.
-"""
+        return loader.render(
+            template,
+            diff_content=diff_content,
+            total_additions=diff.total_additions,
+            total_deletions=diff.total_deletions,
+            file_count=len(diff.files)
+        )
 
     def _parse_message(self, text: str) -> CommitMessage:
         """Parse AI response into CommitMessage.

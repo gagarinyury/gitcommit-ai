@@ -232,3 +232,17 @@ class TestDeepSeekPromptBuilding:
         assert any(marker in prompt for marker in ["+", "-", "@@"])
         # Should explain to analyze actual code changes
         assert "ACTUAL" in prompt or "actual" in prompt
+
+    def test_uses_external_prompt_template(self, sample_diff: GitDiff) -> None:
+        """T205: DeepSeek loads prompt from external template file."""
+        provider = DeepSeekProvider(api_key="sk-test123")
+        prompt = provider._build_prompt(sample_diff)
+
+        # Prompt should come from template, not hardcoded
+        # The template has specific markers we can check
+        assert "CHANGES:" in prompt
+        assert "STATISTICS:" in prompt
+        assert "TASK:" in prompt
+        # Should have variable substitution
+        assert sample_diff.files[0].path in prompt
+        assert str(sample_diff.total_additions) in prompt
