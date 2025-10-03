@@ -1,6 +1,6 @@
 [project]
 name = "gitcommit-ai"
-version = "0.1.0"
+version = "0.1.1"
 description = "AI-powered git commit message generator with 7 providers, git hooks, and custom prompts"
 authors = [
     {name = "Yury Gagarin", email = "yurcheg13@gmail.com"}
