@@ -1,0 +1,62 @@
+name: 'GitCommit AI Validator'
+description: 'Validate and improve commit messages using AI'
+author: 'GitCommit AI Contributors'
+
+branding:
+  icon: 'check-circle'
+  color: 'green'
+
+inputs:
+  provider:
+    description: 'AI provider to use (openai, anthropic, gemini, mistral, cohere, ollama)'
+    required: false
+    default: 'openai'
+
+  api-key:
+    description: 'API key for the provider (or use secrets)'
+    required: false
+    default: ''
+
+  model:
+    description: 'Model to use (provider-specific)'
+    required: false
+    default: ''
+
+  strict-mode:
+    description: 'Fail workflow if commits are invalid'
+    required: false
+    default: 'false'
+
+  auto-fix:
+    description: 'Automatically fix invalid commits'
+    required: false
+    default: 'false'
+
+  comment-pr:
+    description: 'Post suggestions as PR comments'
+    required: false
+    default: 'true'
+
+outputs:
+  total_commits:
+    description: 'Total number of commits validated'
+
+  valid_commits:
+    description: 'Number of valid commits'
+
+  invalid_commits:
+    description: 'Number of invalid commits'
+
+  suggestions:
+    description: 'JSON array of AI-generated suggestions'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  env:
+    INPUT_PROVIDER: ${{ inputs.provider }}
+    INPUT_API_KEY: ${{ inputs.api-key }}
+    INPUT_MODEL: ${{ inputs.model }}
+    INPUT_STRICT_MODE: ${{ inputs.strict-mode }}
+    INPUT_AUTO_FIX: ${{ inputs.auto-fix }}
+    INPUT_COMMENT_PR: ${{ inputs.comment-pr }}

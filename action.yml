@@ -1,0 +1,55 @@
+name: 'GitCommit AI Validator'
+description: 'Validate commit messages using AI and conventional commits'
+author: 'GitCommit AI Contributors'
+
+branding:
+  icon: 'check-circle'
+  color: 'green'
+
+inputs:
+  provider:
+    description: 'AI provider (openai, anthropic, ollama, gemini, mistral, cohere)'
+    required: false
+    default: 'openai'
+  model:
+    description: 'Model to use (provider-specific)'
+    required: false
+    default: ''
+  strict-mode:
+    description: 'Fail workflow on invalid commits'
+    required: false
+    default: 'false'
+  min-score:
+    description: 'Minimum quality score (0-100)'
+    required: false
+    default: '70'
+
+outputs:
+  total_commits:
+    description: 'Total commits analyzed'
+  valid_commits:
+    description: 'Commits passing validation'
+  invalid_commits:
+    description: 'Commits failing validation'
+  average_score:
+    description: 'Average quality score'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        pip install -e .
+
+    - name: Run validation via CLI
+      shell: bash
+      run: |
+        gitcommit-ai validate-pr \
+          ${{ inputs.strict-mode == 'true' && '--strict' || '' }} \
+          ${{ inputs.provider && format('--provider {0}', inputs.provider) || '' }}

@@ -1,50 +1,97 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+Version: 1.0.0 (initial constitution)
+Ratification Date: 2025-10-02
+Modified Principles: N/A (initial version)
+Templates Status: ✅ All templates aligned
+-->
+
+# GitCommit AI Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Library-First Architecture
+Every feature must start as a standalone Python library with clear interfaces. Libraries must be:
+- Self-contained and independently testable
+- Documented with docstrings and type hints
+- Reusable outside the CLI context
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+**Rationale**: Separation of concerns enables testing, reuse, and clear boundaries.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. CLI Interface Mandate
+All functionality MUST be accessible via CLI commands following these rules:
+- Text-based input/output (stdin/args → stdout, errors → stderr)
+- Support both JSON and human-readable output formats
+- Exit codes: 0 = success, non-zero = failure with descriptive message
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+**Rationale**: CLI ensures automation, scriptability, and debuggability.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Test-First Development (NON-NEGOTIABLE)
+TDD is mandatory for all code:
+1. Write tests describing desired behavior
+2. User reviews and approves test cases
+3. Tests MUST fail initially (red)
+4. Implement code to pass tests (green)
+5. Refactor while maintaining green tests
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+**Rationale**: Tests define contracts, prevent regressions, and guide design.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Integration Testing Priority
+Focus integration tests on:
+- AI provider API interactions (OpenAI, Anthropic)
+- Git command execution and parsing
+- End-to-end CLI workflow scenarios
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+**Rationale**: Unit tests catch logic errors; integration tests catch real-world failures.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### V. Simplicity and YAGNI
+- Start with minimal viable implementation
+- No frameworks unless absolutely required
+- Plain Python stdlib preferred over external dependencies
+- One feature at a time
+
+**Rationale**: Complexity is the enemy of maintainability and AI-assisted development.
+
+## Technology Constraints
+
+### Language & Runtime
+- Python 3.11+ (leveraging modern type hints)
+- Standard library preferred; justified deps only
+- No web frameworks for CLI tools
+
+### AI Integration
+- Support OpenAI and Anthropic APIs initially
+- Provider abstraction for future extensibility
+- API keys via environment variables (never hardcoded)
+
+### Git Integration
+- Use subprocess for git commands (avoid gitpython dependency initially)
+- Parse git output with robust error handling
+- Support git hooks for auto-commit-message generation
+
+## Development Workflow
+
+### Code Quality Gates
+1. All tests passing (pytest)
+2. Type checks passing (mypy)
+3. Linter passing (ruff)
+4. Manual smoke test on real repository
+
+### Review Process
+- Constitution compliance verified on every PR
+- Breaking changes require constitution amendment
+- Security review for API key handling
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution is the ultimate authority for development decisions. Any violation requires:
+1. Documented justification
+2. Approval from project maintainer
+3. Constitution amendment if permanent exception
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Amendments follow semantic versioning:
+- MAJOR: Principle removal or incompatible change
+- MINOR: New principle or section added
+- PATCH: Clarification or typo fix
+
+**Version**: 1.0.0 | **Ratified**: 2025-10-02 | **Last Amended**: 2025-10-02

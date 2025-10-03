@@ -1,0 +1,31 @@
+name: Validate Commit Messages
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    name: Check commit message quality
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate commits with GitCommit AI
+        uses: ./.github/actions/gitcommit-ai
+        with:
+          provider: 'openai'
+          api-key: ${{ secrets.OPENAI_API_KEY }}
+          strict-mode: 'false'
+          comment-pr: 'true'
+          auto-fix: 'false'
+
+      - name: Show validation results
+        run: |
+          echo "Total commits: ${{ steps.validate.outputs.total_commits }}"
+          echo "Valid: ${{ steps.validate.outputs.valid_commits }}"
+          echo "Invalid: ${{ steps.validate.outputs.invalid_commits }}"

@@ -1,0 +1,17 @@
+diff --git a/README.md b/README.md
+index aaa1111..bbb2222 100644
+--- a/README.md
++++ b/README.md
+@@ -5,6 +5,12 @@ A command-line tool for managing projects.
+ ## Installation
+
+ ```bash
++pip install project-manager
++```
++
++## Quick Start
++
++```bash
++project-manager init my-project
++project-manager build
+ ```
