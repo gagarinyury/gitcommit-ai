@@ -47,7 +47,7 @@ class TestOpenRouterProvider:
         assert provider.timeout == 60
 
     def test_model_name_validation(self) -> None:
-        """Model name format validation with regex pattern.
+        r"""Model name format validation with regex pattern.
 
         This test verifies T008 requirement:
         - Valid format: vendor/model-name (lowercase, numbers, hyphens, dots)

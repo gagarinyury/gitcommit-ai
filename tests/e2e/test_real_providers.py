@@ -143,58 +143,6 @@ class TestGeminiE2E:
 
 @pytest.mark.e2e
 @pytest.mark.slow
-@pytest.mark.skipif(
-    not os.getenv("MISTRAL_API_KEY"),
-    reason="MISTRAL_API_KEY not set in .env"
-)
-class TestMistralE2E:
-    """E2E tests for Mistral AI provider with real API."""
-
-    @pytest.mark.asyncio
-    async def test_generate_real_commit_message(self):
-        """Generate real commit message using Mistral API."""
-        api_key = os.getenv("MISTRAL_API_KEY")
-        provider = MistralProvider(api_key=api_key)
-
-        errors = provider.validate_config()
-        assert len(errors) == 0
-
-        message = await provider.generate_commit_message(SAMPLE_DIFF)
-
-        assert message.type in ["feat", "fix", "docs", "style", "refactor", "test", "chore"]
-        assert len(message.description) > 10
-
-        print(f"\n✅ Mistral generated: {message.format()}")
-
-
-@pytest.mark.e2e
-@pytest.mark.slow
-@pytest.mark.skipif(
-    not os.getenv("COHERE_API_KEY"),
-    reason="COHERE_API_KEY not set in .env"
-)
-class TestCohereE2E:
-    """E2E tests for Cohere provider with real API."""
-
-    @pytest.mark.asyncio
-    async def test_generate_real_commit_message(self):
-        """Generate real commit message using Cohere API."""
-        api_key = os.getenv("COHERE_API_KEY")
-        provider = CohereProvider(api_key=api_key)
-
-        errors = provider.validate_config()
-        assert len(errors) == 0
-
-        message = await provider.generate_commit_message(SAMPLE_DIFF)
-
-        assert message.type in ["feat", "fix", "docs", "style", "refactor", "test", "chore"]
-        assert len(message.description) > 10
-
-        print(f"\n✅ Cohere generated: {message.format()}")
-
-
-@pytest.mark.e2e
-@pytest.mark.slow
 class TestOllamaE2E:
     """E2E tests for Ollama provider (local, no API key needed)."""
 
@@ -257,7 +205,7 @@ class TestOllamaE2E:
 )
 class TestOpenRouterE2E:
     """E2E tests for OpenRouter provider with real API.
-    
+
     This test verifies T010 requirement:
     - Real API call with valid OpenRouter key
     - Uses openai/gpt-4o-mini model (fast and cheap)
@@ -289,7 +237,7 @@ class TestOpenRouterE2E:
     @pytest.mark.asyncio
     async def test_generate_with_different_model(self):
         """Test OpenRouter with Claude model (anthropic/claude-3-haiku).
-        
+
         This test verifies T011 requirement:
         - Multiple model support through OpenRouter
         - Model format: vendor/model-name
@@ -313,7 +261,7 @@ class TestOpenRouterE2E:
     @pytest.mark.asyncio
     async def test_openrouter_mistral_via_openrouter(self):
         """Test accessing Mistral via OpenRouter.
-        
+
         This verifies T011 requirement:
         - Mistral models accessible through OpenRouter
         - Migration path for Mistral users

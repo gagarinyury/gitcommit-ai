@@ -108,7 +108,7 @@ class TestCLIEndToEnd:
 
 class TestOpenRouterCLIIntegration:
     """Integration tests for OpenRouter CLI functionality.
-    
+
     Tests T012 and T013 requirements:
     - Error message formatting and fallback suggestions
     - Provider list command shows OpenRouter
@@ -116,14 +116,15 @@ class TestOpenRouterCLIIntegration:
 
     def test_openrouter_error_fallback_suggestions(self, capsys):
         """Test that OpenRouter errors suggest fallback providers.
-        
+
         This verifies T012 requirement:
         - Mock OpenRouter 503 error
         - Error message suggests --provider openai, --provider ollama, etc.
         """
         from unittest.mock import AsyncMock, MagicMock, patch
+
+        from gitcommit_ai.generator.message import FileDiff, GitDiff
         from gitcommit_ai.providers.openrouter import OpenRouterProvider
-        from gitcommit_ai.generator.message import GitDiff, FileDiff
 
         sample_diff = GitDiff(
             files=[FileDiff("test.py", "added", 10, 0, "+code")],
@@ -153,19 +154,19 @@ class TestOpenRouterCLIIntegration:
                 asyncio.run(provider.generate_commit_message(sample_diff))
 
             error_message = str(exc_info.value).lower()
-            
+
             # Verify error includes fallback suggestions
             assert "503" in error_message or "unavailable" in error_message
             # Should suggest at least one alternative provider
             has_fallback_suggestion = any(
-                provider_name in error_message 
+                provider_name in error_message
                 for provider_name in ["openai", "anthropic", "ollama", "deepseek"]
             )
             assert has_fallback_suggestion, f"Error should suggest fallback providers: {error_message}"
 
     def test_cli_providers_list_includes_openrouter(self, capsys):
         """Test that 'gitcommit-ai providers' command includes OpenRouter.
-        
+
         This verifies T013 requirement:
         - Output includes "openrouter" provider
         - Shows status (configured/not configured)
@@ -185,7 +186,7 @@ class TestOpenRouterCLIIntegration:
 
             # Verify OpenRouter is listed
             assert "openrouter" in output, "OpenRouter should be in provider list"
-            
+
             # Should show some model examples
             # (exact format depends on implementation, but should mention models)
             assert "model" in output or "gpt" in output or "claude" in output
@@ -193,7 +194,7 @@ class TestOpenRouterCLIIntegration:
 
 class TestMistralCohereRemoval:
     """Tests for Mistral and Cohere provider removal.
-    
+
     Tests T014 and T015 requirements:
     - Mistral NOT in registry
     - Cohere NOT in registry
@@ -201,28 +202,28 @@ class TestMistralCohereRemoval:
 
     def test_mistral_not_in_registry(self):
         """Test that Mistral is removed from provider registry.
-        
+
         This verifies T014 requirement:
         - get_provider_names() does NOT include "mistral"
         """
         from gitcommit_ai.providers.registry import ProviderRegistry
 
         provider_names = ProviderRegistry.get_provider_names()
-        
+
         assert "mistral" not in provider_names, "Mistral should be removed from registry"
         # OpenRouter should be present (replacement)
         assert "openrouter" in provider_names, "OpenRouter should be in registry"
 
     def test_cohere_not_in_registry(self):
         """Test that Cohere is removed from provider registry.
-        
+
         This verifies T015 requirement:
         - get_provider_names() does NOT include "cohere"
         """
         from gitcommit_ai.providers.registry import ProviderRegistry
 
         provider_names = ProviderRegistry.get_provider_names()
-        
+
         assert "cohere" not in provider_names, "Cohere should be removed from registry"
         # OpenRouter should be present (replacement)
         assert "openrouter" in provider_names, "OpenRouter should be in registry"
