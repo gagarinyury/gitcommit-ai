@@ -37,14 +37,24 @@ echo "OPENAI_API_KEY=sk-proj-..." > .env
 echo ".env" >> .gitignore
 ```
 
-**Option 3: DeepSeek (CHEAPEST Cloud Option!)**
+**Option 3: OpenRouter (100+ Models, 1 API Key!)** 🌟
 ```bash
-# Add to ~/.zshrc or ~/.bashrc
+# Get free API key: https://openrouter.ai/keys (1M free requests/month BYOK)
+export OPENROUTER_API_KEY="sk-or-v1-..."
+
+# Access OpenAI, Anthropic, Google, Mistral, Cohere, and 100+ models
+gitcommit-ai generate --provider openrouter --model openai/gpt-4o-mini
+gitcommit-ai generate --provider openrouter --model anthropic/claude-3-haiku
+gitcommit-ai generate --provider openrouter --model mistral/mistral-large
+```
+
+**Option 4: DeepSeek (CHEAPEST Direct!)**
+```bash
 export DEEPSEEK_API_KEY="sk-..."
 gitcommit-ai generate --provider deepseek
 ```
 
-**Option 4: Ollama (FREE, No API Key!) - Default** ⭐
+**Option 5: Ollama (FREE, Local, No API Key!) - Default** ⭐
 ```bash
 # Quick setup wizard (recommended)
 pip install gitcommit-ai
@@ -60,10 +70,11 @@ gitcommit-ai generate  # Uses Ollama automatically!
 💡 **Tip**: Use `gitcommit-ai providers` to see all available providers and their configuration status
 
 ### Where to get API keys:
+- **OpenRouter**: https://openrouter.ai/keys (🎁 **1M free BYOK requests/month!** 100+ models)
 - **OpenAI**: https://platform.openai.com/api-keys
 - **Anthropic**: https://console.anthropic.com/settings/keys
 - **Gemini**: https://aistudio.google.com/apikey
-- **DeepSeek**: https://platform.deepseek.com (💰 **$0.27/1M tokens - cheapest!**)
+- **DeepSeek**: https://platform.deepseek.com (💰 **$0.27/1M tokens - cheapest direct!**)
 - **Ollama**: No key needed (local AI)
 
 ## Quick Start
@@ -339,7 +350,52 @@ mypy src/
 ruff check src/ tests/
 ```
 
+## Migration Guide
+
+### Migrating from Mistral Provider
+
+**Before (v0.1.x):**
+```bash
+export MISTRAL_API_KEY="..."
+gitcommit-ai generate --provider mistral --model mistral-small
+```
+
+**After (v0.2.0+):**
+```bash
+export OPENROUTER_API_KEY="sk-or-v1-..."
+gitcommit-ai generate --provider openrouter --model mistral/mistral-large
+```
+
+**Model mapping:**
+- `mistral-tiny` → `mistral/mistral-tiny`
+- `mistral-small` → `mistral/mistral-small`
+- `mistral-medium` → `mistral/mistral-medium`
+- `mistral-large` → `mistral/mistral-large`
+
+### Migrating from Cohere Provider
+
+**Before (v0.1.x):**
+```bash
+export COHERE_API_KEY="..."
+gitcommit-ai generate --provider cohere --model command-light
+```
+
+**After (v0.2.0+):**
+```bash
+export OPENROUTER_API_KEY="sk-or-v1-..."
+gitcommit-ai generate --provider openrouter --model cohere/command-r-plus
+```
+
+**Model mapping:**
+- `command` → `cohere/command-r`
+- `command-light` → `cohere/command-r-plus`
+
+**Benefits of migration:**
+- ✅ Access 100+ models with 1 API key
+- ✅ 1M free BYOK requests/month on OpenRouter
+- ✅ Still access Mistral/Cohere + OpenAI, Anthropic, Google, and more
+- ✅ Unified API interface (no provider-specific quirks)
+
 ## License
 
 MIT
-test change
