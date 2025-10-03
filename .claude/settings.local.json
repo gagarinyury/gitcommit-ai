@@ -45,7 +45,11 @@
       "Bash(git log:*)",
       "Bash(git restore:*)",
       "Bash(echo $DEEPSEEK_API_KEY)",
-      "Bash(env)"
+      "Bash(env)",
+      "Bash(for provider in gemini mistral cohere)",
+      "Bash(do)",
+      "Bash(grep:*)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []

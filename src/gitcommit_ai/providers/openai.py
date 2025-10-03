@@ -77,31 +77,29 @@ class OpenAIProvider(AIProvider):
         return errors
 
     def _build_prompt(self, diff: GitDiff) -> str:
-        """Build prompt for OpenAI API.
+        """Build prompt using external template.
 
         Args:
             diff: GitDiff object.
 
         Returns:
-            Prompt string.
+            Rendered prompt string.
         """
+        from gitcommit_ai.prompts.loader import PromptLoader
+
         file_list = "\n".join(
             f"- {f.path} (+{f.additions} -{f.deletions})" for f in diff.files
         )
 
-        return f"""Generate a conventional commit message for these changes:
+        loader = PromptLoader()
+        template = loader.load("openai")
 
-Files changed:
-{file_list}
-
-Total: +{diff.total_additions} -{diff.total_deletions}
-
-Format: type(scope): description
-
-Types: feat, fix, docs, style, refactor, test, chore
-Keep description under 50 characters.
-Add body paragraph if needed (2-3 sentences max).
-"""
+        return loader.render(
+            template,
+            file_list=file_list,
+            total_additions=diff.total_additions,
+            total_deletions=diff.total_deletions
+        )
 
     def _parse_message(self, text: str) -> CommitMessage:
         """Parse AI response into CommitMessage.

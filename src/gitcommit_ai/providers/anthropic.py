@@ -71,33 +71,29 @@ class AnthropicProvider(AIProvider):
         return errors
 
     def _build_prompt(self, diff: GitDiff) -> str:
-        """Build prompt for Anthropic API.
+        """Build prompt using external template.
 
         Args:
             diff: GitDiff object.
 
         Returns:
-            Prompt string.
+            Rendered prompt string.
         """
+        from gitcommit_ai.prompts.loader import PromptLoader
+
         file_list = "\n".join(
             f"- {f.path} (+{f.additions} -{f.deletions})" for f in diff.files
         )
 
-        return f"""Generate a conventional commit message for these git changes:
+        loader = PromptLoader()
+        template = loader.load("anthropic")
 
-Files changed:
-{file_list}
-
-Total: +{diff.total_additions} -{diff.total_deletions}
-
-Use conventional commit format: type(scope): description
-
-Valid types: feat, fix, docs, style, refactor, test, chore
-Keep description concise (under 50 characters).
-Optionally add a body paragraph (2-3 sentences) if changes need explanation.
-
-Output only the commit message, nothing else.
-"""
+        return loader.render(
+            template,
+            file_list=file_list,
+            total_additions=diff.total_additions,
+            total_deletions=diff.total_deletions
+        )
 
     def _parse_message(self, text: str) -> CommitMessage:
         """Parse AI response into CommitMessage.

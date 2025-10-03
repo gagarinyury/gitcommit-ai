@@ -93,29 +93,27 @@ class GeminiProvider(AIProvider):
             raise RuntimeError(f"Gemini network error: {e}")
 
     def _build_prompt(self, diff: GitDiff) -> str:
-        """Build prompt for Gemini from git diff.
+        """Build prompt using external template.
 
         Args:
             diff: GitDiff object.
 
         Returns:
-            Formatted prompt string.
+            Rendered prompt string.
         """
-        diff_summary = f"{diff.total_additions} additions, {diff.total_deletions} deletions"
-        files = "\n".join([f"- {f.path} ({f.change_type})" for f in diff.files[:5]])
+        from gitcommit_ai.prompts.loader import PromptLoader
 
-        prompt = f"""Generate a concise git commit message in conventional commit format for these changes:
+        file_list = "\n".join([f"- {f.path} ({f.change_type})" for f in diff.files[:5]])
 
-Files changed:
-{files}
+        loader = PromptLoader()
+        template = loader.load("gemini")
 
-Changes: {diff_summary}
-
-Format: <type>(<scope>): <description>
-Types: feat, fix, docs, style, refactor, test, chore
-
-Return ONLY the commit message, nothing else."""
-        return prompt
+        return loader.render(
+            template,
+            file_list=file_list,
+            total_additions=diff.total_additions,
+            total_deletions=diff.total_deletions
+        )
 
     def _extract_message(self, data: dict[str, Any]) -> str:
         """Extract message text from Gemini API response.

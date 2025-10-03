@@ -76,21 +76,20 @@ class MistralProvider(AIProvider):
             raise RuntimeError(f"Mistral network error: {e}")
 
     def _build_prompt(self, diff: GitDiff) -> str:
-        """Build prompt from git diff."""
-        diff_summary = f"{diff.total_additions} additions, {diff.total_deletions} deletions"
-        files = "\n".join([f"- {f.path} ({f.change_type})" for f in diff.files[:5]])
+        """Build prompt using external template."""
+        from gitcommit_ai.prompts.loader import PromptLoader
 
-        return f"""Generate a concise git commit message in conventional commit format for these changes:
+        file_list = "\n".join([f"- {f.path} ({f.change_type})" for f in diff.files[:5]])
 
-Files changed:
-{files}
+        loader = PromptLoader()
+        template = loader.load("mistral")
 
-Changes: {diff_summary}
-
-Format: <type>(<scope>): <description>
-Types: feat, fix, docs, style, refactor, test, chore
-
-Return ONLY the commit message, nothing else."""
+        return loader.render(
+            template,
+            file_list=file_list,
+            total_additions=diff.total_additions,
+            total_deletions=diff.total_deletions
+        )
 
     def _parse_message(self, message: str) -> CommitMessage:
         """Parse message text into CommitMessage."""

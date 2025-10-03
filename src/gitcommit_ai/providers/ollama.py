@@ -224,52 +224,32 @@ class OllamaProvider(AIProvider):
         return self._parse_response(full_response.strip())
 
     def _build_prompt(self, diff: GitDiff) -> str:
-        """Build improved prompt for Ollama from git diff.
+        """Build prompt using external template.
 
         Args:
             diff: GitDiff object.
 
         Returns:
-            Formatted prompt string with role, examples, and WHY guidance.
+            Rendered prompt string with variables substituted.
         """
-        # Show file details with diff stats (limit to 10 files)
-        file_details = "\n".join([
+        from gitcommit_ai.prompts.loader import PromptLoader
+
+        # Build file list with stats (limit to 10 files)
+        file_list = "\n".join([
             f"- {f.path} ({f.change_type}, +{f.additions} -{f.deletions})"
             for f in diff.files[:10]
         ])
 
-        prompt = f"""You are an expert software engineer writing git commit messages following conventional commits specification.
+        # Load template and render
+        loader = PromptLoader()
+        template = loader.load("ollama")
 
-CONTEXT:
-Files changed:
-{file_details}
-
-Total changes: +{diff.total_additions} -{diff.total_deletions} lines
-
-TASK:
-Analyze the changes and write a precise commit message:
-1. Determine PRIMARY purpose: feat (new capability), fix (bug repair), test (tests only), docs (documentation), refactor (code restructure), chore (maintenance)
-2. Specify exact scope (module/component name, e.g., 'auth', 'parser', 'api')
-3. Write clear description in imperative mood (e.g., "add", "fix", "update", not "added" or "adding")
-4. Add body paragraph (2-3 sentences) explaining WHY/context if change is significant
-
-FORMAT:
-type(scope): brief description (under 50 chars)
-
-[Body paragraph explaining reasoning - ONLY if change is significant]
-
-EXAMPLES:
-feat(auth): implement JWT token refresh mechanism
-
-Automated token refresh maintains user sessions without re-authentication, improving UX and preventing unexpected logouts.
-
-fix(parser): resolve null pointer in date parsing
-
-test(utils): add integration tests for file handling
-
-OUTPUT:
-Return ONLY the commit message without markdown or explanation."""
-        return prompt
+        return loader.render(
+            template,
+            file_list=file_list,
+            total_additions=diff.total_additions,
+            total_deletions=diff.total_deletions
+        )
 
     def _parse_response(self, response: str) -> CommitMessage:
         """Parse Ollama response into CommitMessage.
