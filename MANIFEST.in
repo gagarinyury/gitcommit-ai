@@ -1,0 +1,19 @@
+# Include non-Python files in package distribution
+
+# Include README and license
+include README.md
+include LICENSE
+
+# Include prompt templates (critical!)
+recursive-include src/gitcommit_ai/prompts/templates *.txt
+
+# Include action files for GitHub Actions
+recursive-include .github/actions *.yml *.sh Dockerfile
+
+# Exclude development/test files
+exclude .env
+exclude .env.*
+recursive-exclude tests *
+recursive-exclude .specify *
+prune tests
+prune .specify
