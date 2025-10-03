@@ -215,22 +215,26 @@ async def run_generate(args: argparse.Namespace) -> None:
             sys.exit(5)  # Ollama model error
 
     # Handle new providers (gemini, mistral, cohere, deepseek)
-    if provider in ["gemini", "mistral", "cohere", "deepseek"]:
+    if provider in ["gemini", "deepseek", "openrouter"]:
         if args.verbose:
             print(f"Using {provider.title()} provider...", file=sys.stderr)
         try:
             if provider == "gemini":
                 from gitcommit_ai.providers.gemini import GeminiProvider
                 provider_instance = GeminiProvider(model=args.model)
-            elif provider == "mistral":
-                from gitcommit_ai.providers.mistral import MistralProvider
-                provider_instance = MistralProvider(model=args.model or "mistral-small")
-            elif provider == "cohere":
-                from gitcommit_ai.providers.cohere import CohereProvider
-                provider_instance = CohereProvider(model=args.model or "command-light")
             elif provider == "deepseek":
                 from gitcommit_ai.providers.deepseek import DeepSeekProvider
                 provider_instance = DeepSeekProvider(model=args.model or "deepseek-chat")
+            elif provider == "openrouter":
+                from gitcommit_ai.providers.openrouter import OpenRouterProvider
+                if not args.model:
+                    print("Error: --model required for OpenRouter (e.g., openai/gpt-4o-mini)", file=sys.stderr)
+                    print("Popular models: openai/gpt-4o, anthropic/claude-3-haiku, mistral/mistral-tiny", file=sys.stderr)
+                    sys.exit(3)
+                provider_instance = OpenRouterProvider(
+                    api_key=config.openrouter_api_key or "",
+                    model=args.model
+                )
 
             validation_errors = provider_instance.validate_config()
             if validation_errors:
