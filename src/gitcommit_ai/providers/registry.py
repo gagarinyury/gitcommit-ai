@@ -55,7 +55,7 @@ class ProviderRegistry:
                     "openai/gpt-4o", "openai/gpt-4o-mini",
                     "anthropic/claude-3-5-sonnet", "anthropic/claude-3-haiku",
                     "google/gemini-2.0-flash-exp",
-                    "mistral/mistral-large", "cohere/command-r-plus",
+                    "mistralai/mistral-small", "cohere/command-r-plus",
                     "...100+ more"
                 ],
                 description="OpenRouter (unified access to 100+ models)"

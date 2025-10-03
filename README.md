@@ -45,7 +45,7 @@ export OPENROUTER_API_KEY="sk-or-v1-..."
 # Access OpenAI, Anthropic, Google, Mistral, Cohere, and 100+ models
 gitcommit-ai generate --provider openrouter --model openai/gpt-4o-mini
 gitcommit-ai generate --provider openrouter --model anthropic/claude-3-haiku
-gitcommit-ai generate --provider openrouter --model mistral/mistral-large
+gitcommit-ai generate --provider openrouter --model mistralai/mistral-small
 ```
 
 **Option 4: DeepSeek (CHEAPEST Direct!)**
@@ -363,14 +363,14 @@ gitcommit-ai generate --provider mistral --model mistral-small
 **After (v0.2.0+):**
 ```bash
 export OPENROUTER_API_KEY="sk-or-v1-..."
-gitcommit-ai generate --provider openrouter --model mistral/mistral-large
+gitcommit-ai generate --provider openrouter --model mistralai/mistral-small
 ```
 
 **Model mapping:**
 - `mistral-tiny` → `mistral/mistral-tiny`
 - `mistral-small` → `mistral/mistral-small`
 - `mistral-medium` → `mistral/mistral-medium`
-- `mistral-large` → `mistral/mistral-large`
+- `mistral-large` → `mistralai/mistral-small`
 
 ### Migrating from Cohere Provider
 
