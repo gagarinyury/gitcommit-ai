@@ -91,30 +91,60 @@ class DeepSeekProvider(AIProvider):
         return errors
 
     def _build_prompt(self, diff: GitDiff) -> str:
-        """Build prompt for DeepSeek API.
+        """Build improved prompt for DeepSeek API with actual diff content.
 
         Args:
             diff: GitDiff object.
 
         Returns:
-            Prompt string.
+            Prompt string with code context.
         """
-        file_list = "\n".join(
-            f"- {f.path} (+{f.additions} -{f.deletions})" for f in diff.files
-        )
+        # Build file list with actual diff content (limit to prevent token overflow)
+        file_details = []
+        for f in diff.files[:5]:  # Limit to 5 files to avoid token limits
+            file_details.append(f"File: {f.path} ({f.change_type}, +{f.additions} -{f.deletions})")
+            # Include first 20 lines of diff content for context
+            diff_lines = f.diff_content.split('\n')[:20]
+            if diff_lines:
+                file_details.append("```diff")
+                file_details.append('\n'.join(diff_lines))
+                if len(f.diff_content.split('\n')) > 20:
+                    file_details.append("... (truncated)")
+                file_details.append("```")
 
-        return f"""Generate a conventional commit message for these changes:
+        files_section = "\n\n".join(file_details)
 
-Files changed:
-{file_list}
+        return f"""You are an expert developer writing a git commit message.
 
-Total: +{diff.total_additions} -{diff.total_deletions}
+CHANGES:
+{files_section}
 
-Format: type(scope): description
+STATISTICS:
+Total: +{diff.total_additions} -{diff.total_deletions} lines across {len(diff.files)} file(s)
 
-Types: feat, fix, docs, style, refactor, test, chore
-Keep description under 50 characters.
-Add body paragraph if needed (2-3 sentences max).
+TASK:
+Analyze the actual code changes above and write a precise conventional commit message.
+
+1. Identify the PRIMARY change type:
+   - feat: new feature/capability
+   - fix: bug fix
+   - refactor: code restructure (no behavior change)
+   - docs: documentation only
+   - test: test changes only
+   - chore: maintenance/tooling
+
+2. Determine specific scope (component/module affected, e.g., 'cli', 'auth', 'parser')
+
+3. Write concise description (imperative mood, <50 chars)
+
+4. Add body paragraph (2-3 sentences) explaining WHY if change is significant
+
+FORMAT:
+type(scope): brief description
+
+[Optional body paragraph explaining the reasoning]
+
+IMPORTANT: Base your message on the ACTUAL code changes shown above, not just filenames.
 """
 
     def _parse_message(self, text: str) -> CommitMessage:

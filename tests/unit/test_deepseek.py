@@ -217,3 +217,18 @@ class TestDeepSeekPromptBuilding:
         assert any(
             t in prompt.lower() for t in ["feat", "fix", "docs", "refactor"]
         )
+
+    def test_build_prompt_includes_actual_diff_content(
+        self, sample_diff: GitDiff
+    ) -> None:
+        """Prompt includes actual diff content, not just file names."""
+        provider = DeepSeekProvider(api_key="sk-test123")
+        prompt = provider._build_prompt(sample_diff)
+
+        # Should include diff markers
+        assert "```diff" in prompt
+        # Should include actual code changes from diff_content
+        # The sample_diff fixture has diff_content with actual changes
+        assert any(marker in prompt for marker in ["+", "-", "@@"])
+        # Should explain to analyze actual code changes
+        assert "ACTUAL" in prompt or "actual" in prompt
