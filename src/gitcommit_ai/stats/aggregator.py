@@ -1,7 +1,6 @@
 """Statistics aggregation and analysis."""
 from collections import Counter
 from dataclasses import dataclass
-from typing import Optional
 
 from gitcommit_ai.stats.database import CommitRecord, StatsDatabase
 
@@ -11,11 +10,11 @@ class StatsSummary:
     """Aggregated statistics summary."""
     total_commits: int
     success_rate: float
-    avg_response_time_ms: Optional[float]
+    avg_response_time_ms: float | None
     provider_breakdown: dict[str, int]
     type_breakdown: dict[str, int]
-    fastest_provider: Optional[str]
-    most_reliable_provider: Optional[str]
+    fastest_provider: str | None
+    most_reliable_provider: str | None
 
 
 class StatsAggregator:
@@ -31,8 +30,8 @@ class StatsAggregator:
 
     def get_summary(
         self,
-        provider: Optional[str] = None,
-        days: Optional[int] = None
+        provider: str | None = None,
+        days: int | None = None
     ) -> StatsSummary:
         """Get aggregated statistics summary.
 
@@ -96,7 +95,7 @@ class StatsAggregator:
             most_reliable_provider=most_reliable
         )
 
-    def _get_fastest_provider(self, records: list[CommitRecord]) -> Optional[str]:
+    def _get_fastest_provider(self, records: list[CommitRecord]) -> str | None:
         """Determine fastest provider by average response time."""
         from collections import defaultdict
 
@@ -118,7 +117,7 @@ class StatsAggregator:
         # Return provider with lowest average
         return min(provider_avgs, key=provider_avgs.get)
 
-    def _get_most_reliable_provider(self, records: list[CommitRecord]) -> Optional[str]:
+    def _get_most_reliable_provider(self, records: list[CommitRecord]) -> str | None:
         """Determine most reliable provider by success rate."""
         from collections import defaultdict
 

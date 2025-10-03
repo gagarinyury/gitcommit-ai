@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from gitcommit_ai.core.git import GitError, GitOperations
+from gitcommit_ai.core.git import GitOperations
 
 
 @pytest.fixture

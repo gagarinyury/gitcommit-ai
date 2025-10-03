@@ -1,8 +1,6 @@
 """Tests for provider registry."""
 from unittest.mock import patch
 
-import pytest
-
 from gitcommit_ai.providers.registry import ProviderInfo, ProviderRegistry
 
 

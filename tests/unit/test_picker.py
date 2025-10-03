@@ -1,7 +1,5 @@
 """Tests for InteractivePicker."""
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 from gitcommit_ai.cli.picker import InteractivePicker
 from gitcommit_ai.generator.message import CommitMessage

@@ -68,12 +68,22 @@ gitcommit-ai generate  # Uses Ollama automatically!
 
 ## Quick Start
 
+### 1. Generate Your First Commit Message
+
 ```bash
 # Stage your changes
 git add .
 
-# Generate commit message
+# Generate commit message (uses Ollama by default - FREE!)
 gitcommit-ai generate
+```
+
+**Example Output:**
+```
+feat(auth): implement JWT-based authentication system
+
+Adds secure token-based authentication with refresh tokens and
+role-based access control to protect API endpoints.
 ```
 
 ### 2. Generate with Ollama (local, free!)
@@ -94,6 +104,25 @@ gitcommit-ai install-hooks
 
 # Now every `git commit` auto-generates AI message!
 git commit  # Opens editor with AI-generated message
+```
+
+**How it works:**
+1. You run `git commit` (without `-m` flag)
+2. GitCommit AI analyzes your staged changes
+3. Opens your editor with a pre-filled, AI-generated commit message
+4. You can edit or accept it as-is
+
+### 4. Multiple Suggestions (Pick the Best One!)
+
+```bash
+# Generate 3 suggestions and pick interactively
+gitcommit-ai generate --count 3
+
+# Output:
+# 1. feat(api): add user authentication endpoint
+# 2. feat(auth): implement JWT login functionality
+# 3. feat(backend): create secure user login system
+# Select (1-3): _
 ```
 
 ## Commands

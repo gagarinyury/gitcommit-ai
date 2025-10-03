@@ -1,6 +1,5 @@
 """Commit message validator."""
 import re
-from typing import Tuple
 
 
 class CommitValidator:
@@ -12,7 +11,7 @@ class CommitValidator:
 
     VALID_TYPES = {'feat', 'fix', 'docs', 'style', 'refactor', 'test', 'chore'}
 
-    def validate_conventional(self, message: str) -> Tuple[bool, list[str]]:
+    def validate_conventional(self, message: str) -> tuple[bool, list[str]]:
         """Validate if message follows conventional commits format.
 
         Args:
@@ -37,7 +36,10 @@ class CommitValidator:
                 elif ':' not in message:
                     issues.append("Missing commit type (feat, fix, docs, etc.)")
                 else:
-                    issues.append(f"Invalid commit type '{first_word}' (use: feat, fix, docs, style, refactor, test, chore)")
+                    issues.append(
+                        f"Invalid commit type '{first_word}' "
+                        f"(use: feat, fix, docs, style, refactor, test, chore)"
+                    )
 
             if ':' in message and message.split(':')[1].strip() == "":
                 issues.append("Missing description after colon")

@@ -1,5 +1,4 @@
 """Tests for Gitmoji mapper."""
-import pytest
 
 from gitcommit_ai.generator.message import CommitMessage
 
@@ -138,7 +137,7 @@ class TestGitmojiFormatting:
 
     def test_emoji_in_json_format(self):
         """Test emoji is included in CommitMessage object."""
-        message = CommitMessage(
+        CommitMessage(
             type="feat",
             scope=None,
             description="test",
@@ -170,7 +169,6 @@ class TestGitmojiValidator:
 
     def test_supports_utf8_checks_stdout_encoding(self):
         """Test supports_utf8 checks sys.stdout.encoding."""
-        import sys
         from unittest.mock import MagicMock, patch
 
         from gitcommit_ai.gitmoji.validator import supports_utf8

@@ -1,5 +1,4 @@
 """Tests for Ollama provider."""
-import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -482,6 +481,7 @@ class TestOllamaGenerationParameters:
     def test_stream_response_builds_payload_with_options(self) -> None:
         """T127-T130: _stream_response builds payload with all generation options."""
         import inspect
+
         from gitcommit_ai.providers.ollama import OllamaProvider
 
         provider = OllamaProvider()

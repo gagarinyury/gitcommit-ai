@@ -1,8 +1,8 @@
 """Tests for MultiSuggestionGenerator."""
 import pytest
 
-from gitcommit_ai.generator.multi_generator import MultiSuggestionGenerator
 from gitcommit_ai.generator.message import CommitMessage
+from gitcommit_ai.generator.multi_generator import MultiSuggestionGenerator
 
 
 class TestMultiSuggestionGenerator:

@@ -1,5 +1,5 @@
 """Multi-suggestion generator for commit messages."""
-from typing import Callable, Awaitable
+from collections.abc import Awaitable, Callable
 
 from gitcommit_ai.generator.message import CommitMessage
 

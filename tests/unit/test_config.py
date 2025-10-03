@@ -2,8 +2,6 @@
 import os
 from unittest.mock import patch
 
-import pytest
-
 from gitcommit_ai.core.config import Config, ConfigError
 
 

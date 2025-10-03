@@ -1,29 +1,27 @@
 """SQLite database for commit statistics."""
-import os
 import sqlite3
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 
 @dataclass
 class CommitRecord:
     """Single commit metadata record."""
-    id: Optional[int]
+    id: int | None
     timestamp: str
     provider: str
-    model: Optional[str]
-    commit_type: Optional[str]
+    model: str | None
+    commit_type: str | None
     success: bool
-    response_time_ms: Optional[int]
-    diff_lines: Optional[int]
+    response_time_ms: int | None
+    diff_lines: int | None
 
 
 class StatsDatabase:
     """SQLite wrapper for commit statistics."""
 
-    def __init__(self, db_path: Optional[Path] = None):
+    def __init__(self, db_path: Path | None = None):
         """Initialize database.
 
         Args:
@@ -102,7 +100,7 @@ class StatsDatabase:
 
         return record_id
 
-    def get_all(self, limit: Optional[int] = None) -> list[CommitRecord]:
+    def get_all(self, limit: int | None = None) -> list[CommitRecord]:
         """Get all commit records.
 
         Args:
@@ -165,7 +163,7 @@ class StatsDatabase:
 
         return [self._row_to_record(row) for row in rows]
 
-    def get_by_id(self, record_id: int) -> Optional[CommitRecord]:
+    def get_by_id(self, record_id: int) -> CommitRecord | None:
         """Get record by ID.
 
         Args:

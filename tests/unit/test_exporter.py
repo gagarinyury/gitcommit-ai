@@ -40,7 +40,7 @@ class TestStatsExporter:
 
         StatsExporter.to_csv(sample_records, output_path)
 
-        with open(output_path, "r") as csvfile:
+        with open(output_path) as csvfile:
             reader = csv.DictReader(csvfile)
             rows = list(reader)
 
@@ -62,7 +62,7 @@ class TestStatsExporter:
 
         StatsExporter.to_csv(records, output_path)
 
-        with open(output_path, "r") as csvfile:
+        with open(output_path) as csvfile:
             reader = csv.DictReader(csvfile)
             rows = list(reader)
 
@@ -89,7 +89,7 @@ class TestStatsExporter:
 
         StatsExporter.to_json(sample_records, output_path)
 
-        with open(output_path, "r") as jsonfile:
+        with open(output_path) as jsonfile:
             data = json.load(jsonfile)
 
             assert isinstance(data, list)
@@ -107,7 +107,7 @@ class TestStatsExporter:
 
         StatsExporter.to_json(sample_records, output_path)
 
-        with open(output_path, "r") as jsonfile:
+        with open(output_path) as jsonfile:
             data = json.load(jsonfile)
 
             # Check types
@@ -129,7 +129,7 @@ class TestStatsExporter:
 
         StatsExporter.to_json(records, output_path)
 
-        with open(output_path, "r") as jsonfile:
+        with open(output_path) as jsonfile:
             data = json.load(jsonfile)
 
             assert data[0]["model"] is None

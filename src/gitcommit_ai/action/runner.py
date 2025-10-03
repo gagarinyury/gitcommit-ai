@@ -1,7 +1,6 @@
 """Main GitHub Action runner."""
 import os
 import sys
-from typing import Optional
 
 from gitcommit_ai.core.git import GitOperations
 
@@ -25,7 +24,7 @@ def main() -> int:
     auto_fix = os.getenv("INPUT_AUTO_FIX", "false").lower() == "true"
     comment_pr = os.getenv("INPUT_COMMENT_PR", "true").lower() == "true"
 
-    print(f"Configuration:")
+    print("Configuration:")
     print(f"  Provider:     {provider}")
     print(f"  Model:        {model or '(default)'}")
     print(f"  Strict Mode:  {strict_mode}")
@@ -46,7 +45,7 @@ def main() -> int:
 
     try:
         import json
-        with open(github_event_path, "r") as f:
+        with open(github_event_path) as f:
             event = json.load(f)
 
         # Extract PR commits (simplified)
@@ -82,10 +81,10 @@ def main() -> int:
             is_valid = _validate_commit_message(message)
 
             if is_valid:
-                print(f"  ✓ Valid")
+                print("  ✓ Valid")
                 valid_count += 1
             else:
-                print(f"  ✗ Invalid")
+                print("  ✗ Invalid")
                 invalid_count += 1
 
                 # Generate AI suggestion (simplified)
@@ -174,7 +173,7 @@ def _generate_suggestion(
     provider: str,
     api_key: str,
     model: str
-) -> Optional[str]:
+) -> str | None:
     """Generate AI suggestion for commit message.
 
     Args:

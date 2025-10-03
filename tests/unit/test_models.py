@@ -1,5 +1,4 @@
 """Tests for data models (GitDiff, CommitMessage)."""
-import pytest
 
 from gitcommit_ai.generator.message import CommitMessage, FileDiff, GitDiff
 

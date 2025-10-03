@@ -54,7 +54,7 @@ class TestValidatePRCommand:
             exit_code = main()
 
             # Should print JSON
-            print_calls = [str(call) for call in mock_print.call_args_list]
+            [str(call) for call in mock_print.call_args_list]
             # At least one call should contain JSON-like output
             assert exit_code == 0
 

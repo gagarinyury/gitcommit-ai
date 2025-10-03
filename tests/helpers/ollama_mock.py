@@ -1,5 +1,5 @@
 """Mock Ollama HTTP server for testing."""
-from typing import Iterator
+from collections.abc import Iterator
 
 
 def mock_ollama_stream() -> Iterator[bytes]:
@@ -11,8 +11,7 @@ def mock_ollama_stream() -> Iterator[bytes]:
         b'{"model":"llama3.2","response":" support","done":false}\n',
         b'{"model":"llama3.2","response":"","done":true}\n',
     ]
-    for response in responses:
-        yield response
+    yield from responses
 
 
 def mock_ollama_error_response() -> bytes:

@@ -1,8 +1,7 @@
 """Tests for git diff parser."""
-import pytest
 
 from gitcommit_ai.core.diff_parser import DiffParser
-from gitcommit_ai.generator.message import FileDiff, GitDiff
+from gitcommit_ai.generator.message import GitDiff
 
 
 class TestParseDiff:

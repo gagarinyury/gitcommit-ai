@@ -94,7 +94,6 @@ async def run_generate(args: argparse.Namespace) -> None:
         SystemExit: On errors with appropriate exit codes.
     """
     import time
-    from datetime import datetime
 
     start_time = time.time()
 
@@ -145,7 +144,10 @@ async def run_generate(args: argparse.Namespace) -> None:
                 else:
                     print("  1. Visit: https://ollama.ai", file=sys.stderr)
 
-                print("  2. Download model: ollama pull qwen2.5:7b  (4.7GB, best quality)", file=sys.stderr)
+                print(
+                    "  2. Download model: ollama pull qwen2.5:7b  (4.7GB, best quality)",
+                    file=sys.stderr,
+                )
                 print("\n💡 Or use quick setup: gitcommit-ai setup-ollama\n", file=sys.stderr)
                 print("Errors:", file=sys.stderr)
                 for error in validation_errors:
@@ -163,8 +165,8 @@ async def run_generate(args: argparse.Namespace) -> None:
 
             # Check if multiple suggestions requested
             if hasattr(args, 'count') and args.count > 1:
-                from gitcommit_ai.generator.multi_generator import MultiSuggestionGenerator
                 from gitcommit_ai.cli.picker import InteractivePicker
+                from gitcommit_ai.generator.multi_generator import MultiSuggestionGenerator
 
                 multi_gen = MultiSuggestionGenerator()
 
@@ -273,8 +275,8 @@ async def run_generate(args: argparse.Namespace) -> None:
     try:
         # Check if multiple suggestions requested
         if hasattr(args, 'count') and args.count > 1:
-            from gitcommit_ai.generator.multi_generator import MultiSuggestionGenerator
             from gitcommit_ai.cli.picker import InteractivePicker
+            from gitcommit_ai.generator.multi_generator import MultiSuggestionGenerator
 
             generator = CommitMessageGenerator(provider=provider, api_key=api_key)
             multi_gen = MultiSuggestionGenerator()
@@ -325,7 +327,10 @@ async def run_generate(args: argparse.Namespace) -> None:
             commit_type=message.type,
             success=True,
             response_time_ms=response_time_ms,
-            diff_lines=GitOperations.get_staged_diff().total_additions + GitOperations.get_staged_diff().total_deletions
+            diff_lines=(
+                GitOperations.get_staged_diff().total_additions
+                + GitOperations.get_staged_diff().total_deletions
+            )
         )
 
         # Output result
@@ -334,11 +339,25 @@ async def run_generate(args: argparse.Namespace) -> None:
 
     except GitError as e:
         print(f"Git error: {e}", file=sys.stderr)
-        _log_commit_stats(provider=provider, model=None, commit_type=None, success=False, response_time_ms=None, diff_lines=None)
+        _log_commit_stats(
+            provider=provider,
+            model=None,
+            commit_type=None,
+            success=False,
+            response_time_ms=None,
+            diff_lines=None,
+        )
         sys.exit(1)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
-        _log_commit_stats(provider=provider, model=None, commit_type=None, success=False, response_time_ms=None, diff_lines=None)
+        _log_commit_stats(
+            provider=provider,
+            model=None,
+            commit_type=None,
+            success=False,
+            response_time_ms=None,
+            diff_lines=None,
+        )
         sys.exit(2)
 
 
@@ -441,7 +460,6 @@ def run_validate_pr(args: argparse.Namespace) -> int:
     Returns:
         Exit code (0 for success, 1 for failure).
     """
-    import os
     from gitcommit_ai.action.runner import main as action_main
 
     # Set environment variables from CLI args for action runner

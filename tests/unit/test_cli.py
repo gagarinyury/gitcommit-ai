@@ -51,7 +51,7 @@ class TestCLIOutput:
         ) as mock_gen:
             mock_gen.return_value = mock_message
 
-            with patch("builtins.print") as mock_print:
+            with patch("builtins.print"):
                 with patch("sys.argv", ["gitcommit-ai", "generate"]):
                     with patch("os.getenv", return_value="sk-test123"):
                         # Would normally call main() but need to mock async
@@ -116,6 +116,7 @@ class TestCLIMultipleSuggestions:
     async def test_cli_ollama_supports_count_flag(self) -> None:
         """Ollama provider supports --count flag for multiple suggestions."""
         import argparse
+
         from gitcommit_ai.cli.main import run_generate
         from gitcommit_ai.generator.message import GitDiff
 

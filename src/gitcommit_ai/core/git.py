@@ -1,6 +1,5 @@
 """Git operations for extracting diffs and creating commits."""
 import subprocess
-from pathlib import Path
 
 from gitcommit_ai.core.diff_parser import DiffParser
 from gitcommit_ai.generator.message import GitDiff

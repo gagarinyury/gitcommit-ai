@@ -1,8 +1,6 @@
 """Tests for GitHub Action runner."""
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from gitcommit_ai.action import runner
 
 

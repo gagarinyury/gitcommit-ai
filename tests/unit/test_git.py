@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from gitcommit_ai.core.git import GitError, GitOperations
-from gitcommit_ai.generator.message import FileDiff, GitDiff
+from gitcommit_ai.generator.message import GitDiff
 
 
 class TestIsGitRepository:

@@ -1,5 +1,4 @@
 """Tests for CommitValidator."""
-import pytest
 
 from gitcommit_ai.action.validator import CommitValidator
 

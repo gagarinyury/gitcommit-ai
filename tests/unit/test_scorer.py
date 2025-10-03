@@ -1,5 +1,4 @@
 """Tests for CommitScorer."""
-import pytest
 
 from gitcommit_ai.action.scorer import CommitScorer
 

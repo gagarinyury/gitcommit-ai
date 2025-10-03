@@ -2,9 +2,8 @@
 import json
 import os
 import subprocess
+from collections.abc import AsyncIterator
 from dataclasses import dataclass
-from datetime import datetime
-from typing import AsyncIterator
 
 import httpx
 

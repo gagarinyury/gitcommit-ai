@@ -1,5 +1,4 @@
 """Interactive picker for selecting commit messages."""
-from typing import Optional
 
 from gitcommit_ai.generator.message import CommitMessage
 
@@ -7,7 +6,7 @@ from gitcommit_ai.generator.message import CommitMessage
 class InteractivePicker:
     """Simple numbered picker for commit message selection."""
 
-    def pick(self, suggestions: list[CommitMessage]) -> Optional[CommitMessage]:
+    def pick(self, suggestions: list[CommitMessage]) -> CommitMessage | None:
         """Display suggestions and let user pick one.
 
         Args:
@@ -32,7 +31,7 @@ class InteractivePicker:
         # Get user selection
         while True:
             try:
-                choice = input("Enter number (1-{}) or Ctrl+C to cancel: ".format(len(suggestions)))
+                choice = input(f"Enter number (1-{len(suggestions)}) or Ctrl+C to cancel: ")
 
                 # Validate input
                 try:

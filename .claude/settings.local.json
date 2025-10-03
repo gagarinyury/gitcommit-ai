@@ -54,7 +54,11 @@
       "Bash(git remote set-url:*)",
       "Bash(git branch:*)",
       "Bash(git push:*)",
-      "Bash(tar:*)"
+      "Bash(tar:*)",
+      "Bash(twine check:*)",
+      "Bash(twine upload:*)",
+      "Bash(source:*)",
+      "Bash(ruff check:*)"
     ],
     "deny": [],
     "ask": []

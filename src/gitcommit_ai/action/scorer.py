@@ -1,5 +1,4 @@
 """Commit message quality scorer."""
-import re
 
 
 class CommitScorer:
@@ -22,7 +21,9 @@ class CommitScorer:
         # Check for type (+40 points)
         # Accept both "feat:" and "feat " formats
         has_type = any(
-            message.startswith(t + ':') or message.startswith(t + '(') or message.startswith(t + ' ')
+            message.startswith(t + ':')
+            or message.startswith(t + '(')
+            or message.startswith(t + ' ')
             for t in self.VALID_TYPES
         )
         if has_type:
