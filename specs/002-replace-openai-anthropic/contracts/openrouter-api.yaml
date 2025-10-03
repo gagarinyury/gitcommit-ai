@@ -1,0 +1,202 @@
+openapi: 3.0.3
+info:
+  title: OpenRouter API Contract
+  version: 1.0.0
+  description: |
+    Contract for OpenRouter chat completions endpoint.
+    OpenRouter provides OpenAI-compatible API for 100+ AI models.
+
+servers:
+  - url: https://openrouter.ai/api/v1
+    description: OpenRouter production API
+
+security:
+  - BearerAuth: []
+
+paths:
+  /chat/completions:
+    post:
+      summary: Generate commit message via OpenRouter
+      description: |
+        Send git diff to OpenRouter for commit message generation.
+        Uses OpenAI-compatible chat completions endpoint.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - model
+                - messages
+              properties:
+                model:
+                  type: string
+                  description: Model in format "vendor/model-name"
+                  pattern: '^[a-z0-9-]+/[a-z0-9-\.]+$'
+                  example: "openai/gpt-4o-mini"
+                messages:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    required:
+                      - role
+                      - content
+                    properties:
+                      role:
+                        type: string
+                        enum: [system, user, assistant]
+                      content:
+                        type: string
+                        minLength: 1
+                  example:
+                    - role: system
+                      content: "You are a commit message generator. Generate concise conventional commit messages."
+                    - role: user
+                      content: "Generate commit message for: diff --git a/src/main.py..."
+                temperature:
+                  type: number
+                  minimum: 0.0
+                  maximum: 1.0
+                  default: 0.7
+                max_tokens:
+                  type: integer
+                  minimum: 1
+                  maximum: 4096
+                  default: 500
+
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - model
+                  - choices
+                properties:
+                  id:
+                    type: string
+                    example: "gen-1234567890abcdef"
+                  model:
+                    type: string
+                    example: "openai/gpt-4o-mini"
+                  choices:
+                    type: array
+                    minItems: 1
+                    items:
+                      type: object
+                      required:
+                        - message
+                        - finish_reason
+                      properties:
+                        message:
+                          type: object
+                          required:
+                            - role
+                            - content
+                          properties:
+                            role:
+                              type: string
+                              enum: [assistant]
+                            content:
+                              type: string
+                              description: Generated commit message
+                              example: "feat(api): add user authentication endpoint"
+                        finish_reason:
+                          type: string
+                          enum: [stop, length]
+                  usage:
+                    type: object
+                    properties:
+                      prompt_tokens:
+                        type: integer
+                      completion_tokens:
+                        type: integer
+                      total_tokens:
+                        type: integer
+
+        '400':
+          description: Bad request (invalid model, malformed payload)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  message: "Invalid model: gpt-4o. Must be in format 'vendor/model'"
+                  type: "invalid_request_error"
+                  code: "invalid_model"
+
+        '401':
+          description: Unauthorized (invalid or missing API key)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  message: "Invalid API key. Get yours at https://openrouter.ai/keys"
+                  type: "invalid_request_error"
+                  code: "invalid_api_key"
+
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  message: "Rate limit exceeded. Try again in 60 seconds."
+                  type: "rate_limit_error"
+                  code: "rate_limit_exceeded"
+
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  message: "Service temporarily unavailable"
+                  type: "server_error"
+                  code: "service_unavailable"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        OpenRouter API key in format: sk-or-v1-...
+        Set via OPENROUTER_API_KEY environment variable
+
+  schemas:
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - message
+            - type
+          properties:
+            message:
+              type: string
+            type:
+              type: string
+              enum:
+                - invalid_request_error
+                - authentication_error
+                - rate_limit_error
+                - server_error
+            code:
+              type: string

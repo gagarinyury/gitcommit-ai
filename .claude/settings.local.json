@@ -58,7 +58,11 @@
       "Bash(twine check:*)",
       "Bash(twine upload:*)",
       "Bash(source:*)",
-      "Bash(ruff check:*)"
+      "Bash(ruff check:*)",
+      "Bash(.specify/scripts/bash/create-new-feature.sh:*)",
+      "Bash(.specify/scripts/bash/setup-plan.sh:*)",
+      "Bash(.specify/scripts/bash/check-prerequisites.sh:*)",
+      "Bash(.specify/scripts/bash/update-agent-context.sh:*)"
     ],
     "deny": [],
     "ask": []
