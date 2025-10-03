@@ -36,16 +36,9 @@ class Config:
         anthropic_key = os.getenv("ANTHROPIC_API_KEY")
         deepseek_key = os.getenv("DEEPSEEK_API_KEY")
 
-        # Priority: 1) OpenAI, 2) Anthropic, 3) DeepSeek, 4) Ollama (always available)
-        if openai_key:
-            default_provider = "openai"
-        elif anthropic_key:
-            default_provider = "anthropic"
-        elif deepseek_key:
-            default_provider = "deepseek"
-        else:
-            # Default to Ollama (no API key needed, works offline)
-            default_provider = "ollama"
+        # Default to Ollama (free, local, no API key needed)
+        # Users can override with --provider flag
+        default_provider = "ollama"
 
         return cls(
             openai_api_key=openai_key,

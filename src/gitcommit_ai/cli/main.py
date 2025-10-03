@@ -130,8 +130,26 @@ async def run_generate(args: argparse.Namespace) -> None:
             ollama = OllamaProvider(model=args.model)
             validation_errors = ollama.validate_config()
             if validation_errors:
+                # Show friendly setup message
+                print("\n⚠️  Ollama not found or not configured properly\n", file=sys.stderr)
+                print("🎉 Get FREE local AI in 2 steps:\n", file=sys.stderr)
+
+                import platform
+                os_type = platform.system()
+                if os_type == "Darwin":
+                    print("  1. Install: brew install ollama", file=sys.stderr)
+                elif os_type == "Linux":
+                    print("  1. Install: curl https://ollama.ai/install.sh | sh", file=sys.stderr)
+                elif os_type == "Windows":
+                    print("  1. Download from: https://ollama.ai", file=sys.stderr)
+                else:
+                    print("  1. Visit: https://ollama.ai", file=sys.stderr)
+
+                print("  2. Download model: ollama pull qwen2.5:7b  (4.7GB, best quality)", file=sys.stderr)
+                print("\n💡 Or use quick setup: gitcommit-ai setup-ollama\n", file=sys.stderr)
+                print("Errors:", file=sys.stderr)
                 for error in validation_errors:
-                    print(f"Error: {error}", file=sys.stderr)
+                    print(f"  - {error}", file=sys.stderr)
                 sys.exit(4)  # Ollama not installed
 
             # Determine gitmoji usage
@@ -438,6 +456,20 @@ def run_validate_pr(args: argparse.Namespace) -> int:
     return action_main()
 
 
+def run_setup_ollama(args: argparse.Namespace) -> int:
+    """Run the setup-ollama command.
+
+    Args:
+        args: Parsed command-line arguments.
+
+    Returns:
+        Exit code (0 for success, non-zero for failure).
+    """
+    from gitcommit_ai.cli.setup import OllamaSetup
+
+    return OllamaSetup.run()
+
+
 def run_stats(args: argparse.Namespace) -> None:
     """Run the stats command."""
     from pathlib import Path
@@ -562,6 +594,11 @@ def main() -> None:
     # providers command
     subparsers.add_parser("providers", help="List available AI providers")
 
+    # setup-ollama command
+    subparsers.add_parser(
+        "setup-ollama", help="Interactive Ollama setup wizard (install + download models)"
+    )
+
     # stats command
     stats_parser = subparsers.add_parser("stats", help="Show commit statistics")
     stats_parser.add_argument(
@@ -600,6 +637,8 @@ def main() -> None:
         run_debug_hooks(args)
     elif args.command == "providers":
         run_providers_list(args)
+    elif args.command == "setup-ollama":
+        sys.exit(run_setup_ollama(args))
     elif args.command == "stats":
         run_stats(args)
     elif args.command == "validate-pr":

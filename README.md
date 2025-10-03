@@ -44,10 +44,16 @@ export DEEPSEEK_API_KEY="sk-..."
 gitcommit-ai generate --provider deepseek
 ```
 
-**Option 4: Ollama (FREE, No API Key!) - Default**
+**Option 4: Ollama (FREE, No API Key!) - Default** ⭐
 ```bash
-brew install ollama
-ollama pull qwen2.5:7b  # Best quality model (recommended)
+# Quick setup wizard (recommended)
+pip install gitcommit-ai
+gitcommit-ai setup-ollama  # Interactive setup with auto-detection
+
+# Or manual installation
+brew install ollama  # macOS
+# curl https://ollama.ai/install.sh | sh  # Linux
+ollama pull qwen2.5:7b  # Best quality model (4.7GB)
 gitcommit-ai generate  # Uses Ollama automatically!
 ```
 
@@ -153,6 +159,15 @@ gitcommit-ai uninstall-hooks [--force]
 # Debug
 gitcommit-ai debug-hooks
 ```
+
+### Setup
+
+```bash
+# Interactive Ollama setup wizard (recommended for first-time users)
+gitcommit-ai setup-ollama
+```
+
+Automatically detects your OS, checks Ollama installation, and downloads the recommended model with size confirmation.
 
 ### Providers
 

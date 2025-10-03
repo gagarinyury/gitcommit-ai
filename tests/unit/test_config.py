@@ -15,7 +15,7 @@ class TestConfigLoading:
         with patch.dict(os.environ, {"OPENAI_API_KEY": "sk-test123"}):
             config = Config.load()
             assert config.openai_api_key == "sk-test123"
-            assert config.default_provider == "openai"
+            assert config.default_provider == "ollama"  # Always Ollama by default
 
     def test_load_with_anthropic_key(self) -> None:
         """Config loads successfully with ANTHROPIC_API_KEY set."""
@@ -72,8 +72,8 @@ class TestConfigValidation:
 class TestConfigDefaults:
     """Test default configuration values."""
 
-    def test_default_provider_is_openai(self) -> None:
-        """Default provider is OpenAI when both keys are set."""
+    def test_default_provider_is_ollama(self) -> None:
+        """Default provider is always Ollama (can be overridden with --provider flag)."""
         with patch.dict(
             os.environ,
             {
@@ -82,7 +82,7 @@ class TestConfigDefaults:
             },
         ):
             config = Config.load()
-            assert config.default_provider == "openai"
+            assert config.default_provider == "ollama"
 
     def test_verbose_defaults_to_false(self) -> None:
         """Verbose mode defaults to False."""
@@ -96,11 +96,11 @@ class TestConfigDefaults:
             config = Config.load()
             assert config.default_provider == "ollama"
 
-    def test_default_provider_is_anthropic_when_only_anthropic_key(self) -> None:
-        """Default provider is Anthropic when only Anthropic key is set."""
+    def test_default_provider_is_ollama_when_only_anthropic_key(self) -> None:
+        """Default provider is always Ollama (users can override with --provider flag)."""
         with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "sk-ant-test"}, clear=True):
             config = Config.load()
-            assert config.default_provider == "anthropic"
+            assert config.default_provider == "ollama"
 
 
 class TestConfigError:
