@@ -568,8 +568,8 @@ def main() -> None:
     )
     generate_parser.add_argument(
         "--provider",
-        choices=["openai", "anthropic", "ollama", "gemini", "mistral", "cohere", "deepseek"],
-        help="AI provider to use (default: from config)",
+        choices=["openai", "anthropic", "ollama", "gemini", "deepseek", "openrouter"],
+        help="AI provider to use (default: ollama)",
     )
     generate_parser.add_argument(
         "--model",
