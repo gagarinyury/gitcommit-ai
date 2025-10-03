@@ -41,7 +41,11 @@
       "Bash(gitcommit-ai generate:*)",
       "Bash(gitcommit-ai stats)",
       "Bash(gitcommit-ai install-hooks --force)",
-      "Bash(gitcommit-ai:*)"
+      "Bash(gitcommit-ai:*)",
+      "Bash(git log:*)",
+      "Bash(git restore:*)",
+      "Bash(echo $DEEPSEEK_API_KEY)",
+      "Bash(env)"
     ],
     "deny": [],
     "ask": []

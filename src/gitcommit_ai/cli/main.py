@@ -194,8 +194,8 @@ async def run_generate(args: argparse.Namespace) -> None:
             print(f"Ollama error: {e}", file=sys.stderr)
             sys.exit(5)  # Ollama model error
 
-    # Handle new providers (gemini, mistral, cohere)
-    if provider in ["gemini", "mistral", "cohere"]:
+    # Handle new providers (gemini, mistral, cohere, deepseek)
+    if provider in ["gemini", "mistral", "cohere", "deepseek"]:
         if args.verbose:
             print(f"Using {provider.title()} provider...", file=sys.stderr)
         try:
@@ -208,12 +208,22 @@ async def run_generate(args: argparse.Namespace) -> None:
             elif provider == "cohere":
                 from gitcommit_ai.providers.cohere import CohereProvider
                 provider_instance = CohereProvider(model=args.model or "command-light")
+            elif provider == "deepseek":
+                from gitcommit_ai.providers.deepseek import DeepSeekProvider
+                provider_instance = DeepSeekProvider(model=args.model or "deepseek-chat")
 
             validation_errors = provider_instance.validate_config()
             if validation_errors:
                 for error in validation_errors:
                     print(f"Error: {error}", file=sys.stderr)
                 sys.exit(3)
+
+            # Determine gitmoji usage
+            use_gitmoji = False
+            if hasattr(args, "gitmoji") and args.gitmoji:
+                use_gitmoji = True
+            if hasattr(args, "no_gitmoji") and args.no_gitmoji:
+                use_gitmoji = False
 
             diff = GitOperations.get_staged_diff()
             message = await provider_instance.generate_commit_message(diff)
