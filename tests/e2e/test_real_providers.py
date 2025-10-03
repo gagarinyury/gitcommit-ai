@@ -16,6 +16,7 @@ from gitcommit_ai.providers.gemini import GeminiProvider
 from gitcommit_ai.providers.mistral import MistralProvider
 from gitcommit_ai.providers.ollama import OllamaProvider
 from gitcommit_ai.providers.openai import OpenAIProvider
+from gitcommit_ai.providers.openrouter import OpenRouterProvider
 
 # Sample git diff for testing
 SAMPLE_DIFF = GitDiff(
@@ -248,3 +249,89 @@ class TestOllamaE2E:
         assert len(message.description) > 10
 
         print(f"\n✅ Ollama generated: {message.format()}")
+
+
+@pytest.mark.e2e
+@pytest.mark.slow
+@pytest.mark.skipif(
+    not os.getenv("OPENROUTER_API_KEY"),
+    reason="OPENROUTER_API_KEY not set in .env"
+)
+class TestOpenRouterE2E:
+    """E2E tests for OpenRouter provider with real API.
+    
+    This test verifies T010 requirement:
+    - Real API call with valid OpenRouter key
+    - Uses openai/gpt-4o-mini model (fast and cheap)
+    - Verifies conventional commit message format
+    """
+
+    @pytest.mark.asyncio
+    async def test_generate_real_commit_message(self):
+        """Generate real commit message using OpenRouter API."""
+        api_key = os.getenv("OPENROUTER_API_KEY")
+        assert api_key, "OPENROUTER_API_KEY must be set"
+
+        provider = OpenRouterProvider(
+            api_key=api_key,
+            model="openai/gpt-4o-mini"
+        )
+
+        errors = provider.validate_config()
+        assert len(errors) == 0, f"Config validation failed: {errors}"
+
+        message = await provider.generate_commit_message(SAMPLE_DIFF)
+
+        assert message.type in ["feat", "fix", "docs", "style", "refactor", "test", "chore"]
+        assert len(message.description) > 10
+        assert message.description[0].islower(), "Description should start with lowercase"
+
+        print(f"\n✅ OpenRouter (gpt-4o-mini) generated: {message.format()}")
+
+    @pytest.mark.asyncio
+    async def test_generate_with_different_model(self):
+        """Test OpenRouter with Claude model (anthropic/claude-3-haiku).
+        
+        This test verifies T011 requirement:
+        - Multiple model support through OpenRouter
+        - Model format: vendor/model-name
+        """
+        api_key = os.getenv("OPENROUTER_API_KEY")
+        if not api_key:
+            pytest.skip("OPENROUTER_API_KEY not set")
+
+        provider = OpenRouterProvider(
+            api_key=api_key,
+            model="anthropic/claude-3-haiku"
+        )
+
+        message = await provider.generate_commit_message(SAMPLE_DIFF)
+
+        assert message.type in ["feat", "fix", "docs", "style", "refactor", "test", "chore"]
+        assert len(message.description) > 5
+
+        print(f"\n✅ OpenRouter (claude-3-haiku) generated: {message.format()}")
+
+    @pytest.mark.asyncio
+    async def test_openrouter_mistral_via_openrouter(self):
+        """Test accessing Mistral via OpenRouter.
+        
+        This verifies T011 requirement:
+        - Mistral models accessible through OpenRouter
+        - Migration path for Mistral users
+        """
+        api_key = os.getenv("OPENROUTER_API_KEY")
+        if not api_key:
+            pytest.skip("OPENROUTER_API_KEY not set")
+
+        provider = OpenRouterProvider(
+            api_key=api_key,
+            model="mistral/mistral-tiny"
+        )
+
+        message = await provider.generate_commit_message(SAMPLE_DIFF)
+
+        assert message.type in ["feat", "fix", "docs", "style", "refactor", "test", "chore"]
+        assert len(message.description) > 5
+
+        print(f"\n✅ OpenRouter (mistral-tiny) generated: {message.format()}")
