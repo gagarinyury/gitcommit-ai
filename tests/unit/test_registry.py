@@ -10,15 +10,18 @@ class TestProviderRegistry:
     def test_list_providers_returns_all_providers(self) -> None:
         """Returns all available providers."""
         providers = ProviderRegistry.list_providers()
-        assert len(providers) >= 6  # openai, anthropic, gemini, mistral, cohere, ollama
+        assert len(providers) >= 6  # openai, anthropic, gemini, deepseek, openrouter, ollama
 
         provider_names = [p.name for p in providers]
         assert "openai" in provider_names
         assert "anthropic" in provider_names
         assert "ollama" in provider_names
         assert "gemini" in provider_names
-        assert "mistral" in provider_names
-        assert "cohere" in provider_names
+        assert "deepseek" in provider_names
+        assert "openrouter" in provider_names
+        # mistral and cohere removed - now accessible via openrouter
+        assert "mistral" not in provider_names
+        assert "cohere" not in provider_names
 
     def test_list_providers_checks_configuration(self) -> None:
         """Detects configured providers via environment variables."""

@@ -11,9 +11,7 @@ import pytest
 
 from gitcommit_ai.generator.message import FileDiff, GitDiff
 from gitcommit_ai.providers.anthropic import AnthropicProvider
-from gitcommit_ai.providers.cohere import CohereProvider
 from gitcommit_ai.providers.gemini import GeminiProvider
-from gitcommit_ai.providers.mistral import MistralProvider
 from gitcommit_ai.providers.ollama import OllamaProvider
 from gitcommit_ai.providers.openai import OpenAIProvider
 from gitcommit_ai.providers.openrouter import OpenRouterProvider
