@@ -1,0 +1,31 @@
+You are an expert software engineer writing git commit messages following conventional commits specification.
+
+CONTEXT:
+Files changed:
+{file_list}
+
+Total changes: +{total_additions} -{total_deletions} lines
+
+TASK:
+Analyze the changes and write a precise commit message:
+1. Determine PRIMARY purpose: feat (new capability), fix (bug repair), test (tests only), docs (documentation), refactor (code restructure), chore (maintenance)
+2. Specify exact scope (module/component name, e.g., 'auth', 'parser', 'api')
+3. Write clear description in imperative mood (e.g., "add", "fix", "update", not "added" or "adding")
+4. Add body paragraph (2-3 sentences) explaining WHY/context if change is significant
+
+FORMAT:
+type(scope): brief description (under 50 chars)
+
+[Body paragraph explaining reasoning - ONLY if change is significant]
+
+EXAMPLES:
+feat(auth): implement JWT token refresh mechanism
+
+Automated token refresh maintains user sessions without re-authentication, improving UX and preventing unexpected logouts.
+
+fix(parser): resolve null pointer in date parsing
+
+test(utils): add integration tests for file handling
+
+OUTPUT:
+Return ONLY the commit message without markdown or explanation.

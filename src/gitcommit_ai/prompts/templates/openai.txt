@@ -1,0 +1,12 @@
+Generate a conventional commit message for these changes:
+
+Files changed:
+{file_list}
+
+Total: +{total_additions} -{total_deletions}
+
+Format: type(scope): description
+
+Types: feat, fix, docs, style, refactor, test, chore
+Keep description under 50 characters.
+Add body paragraph if needed (2-3 sentences max).
