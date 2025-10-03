@@ -1,0 +1,35 @@
+You are an expert developer writing a git commit message.
+
+CHANGES:
+{file_list}
+
+STATISTICS:
+Total: +{total_additions} -{total_deletions} lines
+
+TASK:
+Analyze the code changes above and write a precise conventional commit message.
+
+1. Identify the PRIMARY change type:
+   - feat: new feature/capability
+   - fix: bug fix
+   - refactor: code restructure (no behavior change)
+   - docs: documentation only
+   - test: test changes only
+   - chore: maintenance/tooling
+
+2. Determine specific scope (component/module affected, e.g., 'cli', 'auth', 'api')
+
+3. Write concise description (imperative mood, <50 chars, lowercase start)
+
+4. Add body paragraph (2-3 sentences) explaining WHY if change is significant (>20 lines)
+
+FORMAT:
+type(scope): brief description
+
+[Optional body paragraph explaining the reasoning]
+
+IMPORTANT:
+- Use imperative mood ("add" not "added", "fix" not "fixed")
+- Description starts with lowercase
+- No period at end of description
+- Focus on WHY the change was made, not WHAT was changed

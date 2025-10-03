@@ -147,18 +147,20 @@ class TestOpenRouterRequestFormat:
 
             # Verify request was made
             assert mock_post.called
-            call_kwargs = mock_post.call_args.kwargs
+            # URL is first positional arg in httpx.post(url, ...)
+            call_args = mock_post.call_args
+            url = call_args[0][0] if call_args[0] else call_args.kwargs.get("url", "")
 
             # Verify URL
-            assert "openrouter.ai/api/v1/chat/completions" in str(call_kwargs.get("url", ""))
+            assert "openrouter.ai/api/v1/chat/completions" in str(url)
 
             # Verify headers
-            headers = call_kwargs.get("headers", {})
+            headers = call_args.kwargs.get("headers", {})
             assert "Authorization" in headers
             assert headers["Authorization"] == "Bearer sk-or-v1-test"
 
             # Verify request payload
-            json_data = call_kwargs.get("json", {})
+            json_data = call_args.kwargs.get("json", {})
             assert json_data["model"] == "openai/gpt-4o-mini"
             assert "messages" in json_data
             assert len(json_data["messages"]) >= 2
